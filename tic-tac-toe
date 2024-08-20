@@ -1,0 +1,4 @@
+#!/bin/bash
+   
+/usr/bin/python3 /home/lucas_melo/www/Python/tic-tac-toe/main.py
+
