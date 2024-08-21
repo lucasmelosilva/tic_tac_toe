@@ -9,7 +9,7 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_WIDTH))
 
 clock = pygame.time.Clock()
 
-font = pygame.font.Font('freesansbold.ttf', 32)
+font = pygame.font.Font('freesansbold.ttf', 40)
 winner_text = font.render('', True, 'green')
 textRect = winner_text.get_rect()
 textRect.center = (WINDOW_WIDTH // 2 - PIXEL_WIDTH // 2, WINDOW_WIDTH // 2)
@@ -34,17 +34,21 @@ PLAYER_1 = 0
 PLAYER_2 = 1
 player = PLAYER_1
 
+def clear():
+    for i in range(3):
+        for j in range(3):
+            board[i][j] = None
+            
 def clear_board():
-    if (pygame.mouse.get_pressed()[0]):
-        for i in range(3):
-            for j in range(3):
-                board[i][j] = None
+    clear()
 
 def play_turn(current_player):
     curr_coordinate = pygame.math.Vector2(pygame.mouse.get_pos())
     normalized_coordinate = curr_coordinate // PIXEL_WIDTH
-    if (pygame.mouse.get_pressed()[0]):
+    if pygame.mouse.get_pressed()[0]:
         col, row = map(int, normalized_coordinate)
+        if board[row][col] is not None:
+            return
         board[row][col] = current_player
         global player
         player = 1 - player
@@ -82,7 +86,13 @@ def is_winner(game_player):
     return has_winning_row(game_player) \
         or has_winning_col(game_player) \
         or has_winning_diagonal(game_player)
-    
+
+def check_no_winner():
+    for i in range(3):
+        for j in range(3):
+            if board[i][j] is None:
+                return False
+    return True    
 
 def check_victory():
     global winner_text
@@ -91,6 +101,9 @@ def check_victory():
         return True
     if is_winner(PLAYER_2):
         winner_text = font.render('Player 2 WON!', True, 'green')
+        return True
+    if check_no_winner():
+        winner_text = font.render('No Winner!', True, 'green')
         return True
 
 while running:
@@ -109,7 +122,6 @@ while running:
     
     if check_victory():
         screen.blit(winner_text, textRect)
-        pygame.event.wait()
         clear_board()
     clock.tick(60)
 
