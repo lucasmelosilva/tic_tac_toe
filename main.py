@@ -34,6 +34,12 @@ PLAYER_1 = 0
 PLAYER_2 = 1
 player = PLAYER_1
 
+def clear_board():
+    if (pygame.mouse.get_pressed()[0]):
+        for i in range(3):
+            for j in range(3):
+                board[i][j] = None
+
 def play_turn(current_player):
     curr_coordinate = pygame.math.Vector2(pygame.mouse.get_pos())
     normalized_coordinate = curr_coordinate // PIXEL_WIDTH
@@ -103,6 +109,8 @@ while running:
     
     if check_victory():
         screen.blit(winner_text, textRect)
+        pygame.event.wait()
+        clear_board()
     clock.tick(60)
 
 pygame.quit()
